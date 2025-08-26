@@ -10,6 +10,9 @@ app.use(cors());
 const uploadingRoutes = require("./uploading");
 app.use("/", uploadingRoutes);
 
+const transcodeRoute = require("./transcode");
+app.use("/",transcodeRoute);
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
