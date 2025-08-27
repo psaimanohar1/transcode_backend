@@ -12,10 +12,10 @@ const storage = multer.diskStorage({
     cb(null, "uploads/"); // save files in "uploads" folder
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const customName = req.body.filename || "uploaded_file";
-    const finalName = Date.now() + "-" + customName + ext;
-    cb(null, finalName);
+    // const ext = path.extname(file.originalname);
+    // const customName = req.body.filename || "uploaded_file";
+    // const finalName = Date.now() + "-" + customName + ext;
+    cb(null, file.originalname);
   },
 });
 
