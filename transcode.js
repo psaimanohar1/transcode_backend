@@ -35,10 +35,11 @@ router.post("/transcode", (req, res) => {
   const ffmpegPath = "C:\\FFMPEG\\ffmpeg-2025-08-20-git-4d7c609be3-full_build\\bin\\ffmpeg.exe";
 
    const cmd = `"${ffmpegPath}" -i "${inputPath}" \
-    -c:v libx264 -preset slow -crf 23 \
-    -vf "scale=-2:${resolution}:force_original_aspect_ratio=decrease" \
-    -c:a aac -b:a 128k \
-    -movflags +faststart "${outputPath}"`;
+  -c:v libx264 -preset slow -crf 23 \
+  -vf "scale=-2:${resolution}:force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2" \
+  -c:a aac -b:a 128k \
+  -movflags +faststart "${outputPath}"`;
+;
 
   exec(cmd, (error,stdout, stderr) => {
     if (error){
@@ -48,9 +49,6 @@ router.post("/transcode", (req, res) => {
     }
 
     console.log(`Transcoding completed for the resolution ${resolution}`);
-
-    app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 
     res.json({
     message: `Transcode request received for resolution ${resolution}`,

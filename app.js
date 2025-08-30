@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -9,6 +10,9 @@ app.use(cors());
 // import uploading routes
 const uploadingRoutes = require("./uploading");
 app.use("/", uploadingRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 const transcodeRoute = require("./transcode");
 app.use("/",transcodeRoute);
