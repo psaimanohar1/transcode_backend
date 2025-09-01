@@ -1,13 +1,13 @@
 const express = require("express");
 const { exec } = require("child_process");
-const { error } = require("console");
+const { error, log } = require("console");
 const { stdout, stderr } = require("process");
 const path = require("path");
 
 const router = express.Router();
 
 // Make sure to parse JSON
-router.use(express.json());
+// router.use(express.json());
 
 router.post("/transcode", (req, res) => {
   const resolution = req.body.resolution;
@@ -51,10 +51,22 @@ router.post("/transcode", (req, res) => {
     console.log(`Transcoding completed for the resolution ${resolution}`);
 
     res.json({
-    message: `Transcode request received for resolution ${resolution}`,
+    message: `Transcode request completed for resolution ${resolution}`,
     output_url_backend :  `/uploads/${path.basename(outputPath)}`
     });
 });
+
+})
+
+router.post("/testing", (req,res) => {
+  const data = req.body;
+
+  console.log(data);
+
+  res.json ( {
+    message : " i have received front end data and ACk from backend"
+  })
+  
 
 })
 
