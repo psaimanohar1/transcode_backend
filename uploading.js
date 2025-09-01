@@ -38,7 +38,8 @@ router.post("/upload", upload.single("file"), (req, res) => {
   const ffprobePath = "C:\\FFMPEG\\ffmpeg-2025-08-20-git-4d7c609be3-full_build\\bin\\ffprobe.exe";
 
   const cmd = `"${ffprobePath}" -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "${filePath}"`;
-
+  
+  // for getting the resolution.
   exec(cmd, (error, stdout, stderr) => {
     if (error) {
       console.error("ffprobe error:", error.message);
@@ -49,11 +50,35 @@ router.post("/upload", upload.single("file"), (req, res) => {
     // stdout contains the resolution, e.g., "1920x1080"
     const resolution = stdout.trim();
 
+
+    //for mediainfo.
+   const mediainfo_cmd =  `"${ffprobePath}" -v quiet -print_format json -show_format -show_streams "${filePath}"`
+   exec(mediainfo_cmd , (error, mediaInfostdout, stderr) => {
+    if (error) {
+      console.log("error while exectuing mediainfo command", error.message);
+      console.log(stderr);
+      return res.status(500).json({message: "error while getting the mediainfo"});
+    }
+    let mediaInfo;
+    try {
+      mediaInfo = JSON.parse(mediaInfostdout);
+    } catch (err) {
+      console.error("Error parsing ffprobe output:", err);
+      return res.status(500).json({ message: "Invalid ffprobe output" });
+    }
+
     res.json({
       message: "File uploaded successfully",
       filename: req.file.filename,
       path: req.file.path,
       resolution: resolution,
+      mediaInfo_backend: mediaInfo
+
+
+  
+ })
+
+  
     });
   });
 });
